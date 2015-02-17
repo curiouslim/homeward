@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+  <property name="hibernate.connection.password">GLbasket23</property>
+  <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/homeward</property>
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <mapping class="com.homeward.orm.Gender"/>
+  <mapping class="com.homeward.orm.User"/>
+  <mapping class="com.homeward.orm.ZipCode"/>
+  <mapping class="com.homeward.orm.City"/>
+  <mapping class="com.homeward.orm.State"/>
+<!--  <mapping class="com.homeward.orm.University"/> -->
+  <mapping class="com.homeward.orm.Listing"/>
+ </session-factory>
+</hibernate-configuration>
