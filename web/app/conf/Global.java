@@ -1,7 +1,5 @@
 package conf;
 
-import java.util.List;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.service.ServiceRegistry;
@@ -13,22 +11,17 @@ import play.GlobalSettings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Guice;
-import com.homeward.orm.ZipCode;
-
-import play.Logger;
+import com.hibernate.modules.HomewardModule;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.Version;
 
 public class Global extends GlobalSettings {
 
-	private Injector injector;
+	private static final Injector injector = createInjector();
 
 	@Override
 	public void onStart(Application appliation) {
-		injector = Guice.createInjector(new AbstractModule() {
-			@Override
-			protected void configure() {
-			}
-		});
-
 		Configuration configuration = new Configuration();
 		configuration.configure();
 		StandardServiceRegistryBuilder serviceRegistry = new StandardServiceRegistryBuilder();
@@ -39,11 +32,16 @@ public class Global extends GlobalSettings {
 				.buildSessionFactory(registry);
 
 		Session session = sessionFactory.openSession();
-		List<ZipCode> zipCodes = session.createCriteria(ZipCode.class).list();
-
-		System.out.println("here");
-		System.out.println("zip codes: " + zipCodes.size());
-		Logger.info("ZIP CODES {}", zipCodes.size());
 		session.close();
+	}
+
+	@Override
+	public <T> T getControllerInstance(Class<T> aClass) throws Exception {
+		System.out.println("in controller instance");
+		return injector.getInstance(aClass);
+	}
+	
+	private static Injector createInjector() {
+		return Guice.createInjector(new HomewardModule());
 	}
 }
