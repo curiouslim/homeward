@@ -109,4 +109,189 @@ add constraint zip_code_fk foreign key (HOMETOWN_ZIP) references ZIP_CODE(ZIP);
 alter table LISTING
 add constraint zip_codes_fk foreign key (ZIP) references ZIP_CODE(ZIP);
 
+------- postgres -------
+
 COPY universities FROM '/Users/georgelim/Downloads/Accreditation_2014_12/Accreditation_2014_12.csv' DELIMITER ',' HEADER CSV;
+
+create table universities (ID int, NAME varchar(255), ADDRESS varchar(255), CITY varchar(38), STATE char(2), ZIP_CODE char(10), PHONE_NUMBER char(20), WEB_ADDRESS varchar(255);
+
+DELETE FROM Universities WHERE ctid NOT IN (SELECT MIN(ctid) FROM Universities GROUP BY id, name, address, state, city, zip_code, phone_number, web_address); 
+
+COPY zip_codes FROM '/Users/georgelim/Development/Homeward/homeward/zipcode.csv' DELIMITER ',' HEADER CSV;
+
+create table CITY(
+ID serial PRIMARY KEY,
+NAME VARCHAR(200) NOT NULL);
+
+insert into CITY (NAME)
+select distinct ZIP_CODES.CITY
+from ZIP_CODES;
+
+create index city_idx on city (NAME);
+
+create table STATE(
+ID serial PRIMARY KEY,
+NAME VARCHAR (2) NOT NULL);
+
+insert into STATE (NAME)
+select distinct ZIP_CODES.STATE
+from ZIP_CODES;
+
+create index state_idx on state (name);
+
+CREATE TABLE USERS(
+ID serial NOT NULL PRIMARY KEY,
+FIRST_NAME VARCHAR(100) NOT NULL,
+LAST_NAME VARCHAR(100) NOT NULL,
+EMAIL_ADDRESS VARCHAR(255) NOT NULL,
+PASSWORD VARCHAR(255) NOT NULL,
+MIDDLE_NAME VARCHAR(50),
+FB_USER_ID BIGINT,
+FB_ACCESS_TOKEN VARCHAR(255),
+FB_INTERESTS_ID INTEGER,
+GENDER_ID INTEGER,
+PHONE_NUMBER CHAR(20),
+LINKEDIN_URL VARCHAR(100),
+EMAIL_IS_VERIFIED BOOLEAN NOT NULL DEFAULT FALSE,
+PHOTO_PROFILE_ID INTEGER,
+UNIVERSITY_ID INTEGER,
+IS_ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
+LIFESTYLE VARCHAR(300),
+INTEREST_ID INTEGER,
+PREFERENCE_ID INTEGER,
+BIRTHDAY DATE,
+PET_ID INTEGER,
+PERSONAL_DESCRIPTION TEXT,
+LOOKING_FOR TEXT,
+OCCUPATION TEXT
+);
+
+CREATE TABLE LISTING(
+ID serial NOT NULL PRIMARY KEY,
+TITLE VARCHAR(255) NOT NULL,
+DESCRIPTION TEXT,
+LOOKING_FOR TEXT,
+PRICING INTEGER NOT NULL,
+IS_FURNISHED BOOLEAN,
+ADDRESS VARCHAR(255) NOT NULL,
+ZIP_CODE VARCHAR(5) NOT NULL,
+NUM_OF_ROOMS INTEGER NOT NULL,
+ROOMATE_GROUP_ID INTEGER,
+PHOTO_ALBUM_ID INTEGER,
+AMENITIES_ID INTEGER,
+NEIGHBORHOOD_ID INTEGER,
+POINTS_OF_INTEREST_ID INTEGER,
+LAT DECIMAL(9,6),
+LON DECIMAL(9,6),
+IS_AVAILABLE BOOLEAN,
+USER_ID INTEGER,
+HOUSE_RULES TEXT,
+TRANSIT_ID INTEGER,
+DATE_START DATE,
+DATE_END DATE,
+IS_PET_ALLOWED BOOLEAN
+);
+
+ALTER TABLE LISTING 
+ADD CONSTRAINT zipcode_fk 
+FOREIGN KEY (zip_code) 
+REFERENCES zip_codes; 
+
+
+create table pets (
+id serial not null primary key,
+name varchar(255) not null);
+
+ALTER TABLE USERS
+ADD CONSTRAINT pets_fk 
+FOREIGN KEY (pet_id) 
+REFERENCES pets; 
+
+create table amenitiy (
+id serial not null primary key,
+name varchar(255) not null);
+
+create table amenities (
+id serial not null primary key,
+listing_id integer not null,
+amenitiy_id integer not null);
+
+ALTER TABLE amenities
+ADD CONSTRAINT amenity_fk 
+FOREIGN KEY (amenitiy_id) 
+REFERENCES amenitiy; 
+
+ALTER TABLE amenities
+ADD CONSTRAINT listing_fk 
+FOREIGN KEY (listing_id) 
+REFERENCES listing; 
+
+create table photo_album (
+id serial not null primary key,
+title varchar(255),
+date_created timestamp);
+
+create table photo (
+id serial not null primary key,
+url varchar(255) not null,
+photo_album_id integer);
+
+ALTER TABLE photo
+ADD CONSTRAINT photo_album_fk 
+FOREIGN KEY (photo_album_id) 
+REFERENCES photo_album; 
+
+ALTER TABLE USERS
+ADD CONSTRAINT photo_fk 
+FOREIGN KEY (photo_profile_id) 
+REFERENCES photo; 
+
+ALTER TABLE LISTING
+ADD CONSTRAINT photo_album_fk 
+FOREIGN KEY (photo_album_id) 
+REFERENCES photo_album; 
+
+CREATE TABLE gender (
+id serial not null primary key,
+name varchar(10) not null);
+
+insert into gender (name) values ('Male');
+insert into gender (name) values ('Female');
+
+ALTER TABLE USERS
+ADD CONSTRAINT gender_fk 
+FOREIGN KEY (gender_id) 
+REFERENCES gender; 
+
+ALTER TABLE USERS
+ADD CONSTRAINT university_fk 
+FOREIGN KEY (UNIVERSITY_ID) 
+REFERENCES universities; 
+
+create table conversation (
+id serial not null primary key,
+listing_id integer not null,
+asker_user_id integer not null,
+date_created timestamp not null);
+
+create table message (
+id serial not null primary key,
+conversation_id integer not null,
+message text not null,
+date_created timestamp not null);
+
+alter table message
+add constraint conversation_fk
+foreign key (conversation_id)
+references conversation;
+
+alter table conversation
+add constraint listing_fk
+foreign key (listing_id)
+references listing;
+
+alter table conversation
+add constraint users_fk
+foreign key (asker_user_id)
+references users;
+
