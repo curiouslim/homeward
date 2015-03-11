@@ -109,3 +109,4 @@ add constraint zip_code_fk foreign key (HOMETOWN_ZIP) references ZIP_CODE(ZIP);
 alter table LISTING
 add constraint zip_codes_fk foreign key (ZIP) references ZIP_CODE(ZIP);
 
+COPY universities FROM '/Users/georgelim/Downloads/Accreditation_2014_12/Accreditation_2014_12.csv' DELIMITER ',' HEADER CSV;
